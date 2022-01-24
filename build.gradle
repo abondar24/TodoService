@@ -1,0 +1,32 @@
+plugins {
+    id "java"
+    id "idea"
+    id "org.springframework.boot" version "$springBootVersion"
+    id "io.freefair.lombok" version "$lombokVersion"
+}
+
+apply plugin: "java"
+apply plugin: "io.spring.dependency-management"
+
+group "org.abondar.industrial"
+version '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+
+    implementation ("org.springframework.boot:spring-boot-starter-web")
+    implementation ("org.springframework.boot:spring-boot-starter-data-jpa")
+    implementation ("org.springframework.boot:spring-boot-starter-actuator")
+
+
+    testImplementation ("org.springframework.boot:spring-boot-starter-test")
+    testImplementation ("org.junit.jupiter:junit-jupiter-api:$junitVersion")
+    testRuntimeOnly ("org.junit.jupiter:junit-jupiter-engine:$junitVersion")
+}
+
+test {
+    useJUnitPlatform()
+}
