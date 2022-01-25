@@ -75,6 +75,29 @@ public class ItemRepositoryTest {
     assertEquals(item.getId(), res.get(0).getId());
   }
 
+  @Test
+  public void dueDateTest() throws Exception {
+    var item = createItem();
+
+    Thread.sleep(2000);
+
+    itemRepository.updateToPastDue();
+
+    var res = itemRepository.findById(item.getId());
+    assertEquals(ItemStatus.PAST_DUE, res.get().getStatus());
+  }
+
+  @Test
+  public void dueDateItemDoneTest() throws Exception {
+    var item = createItem();
+    itemRepository.updateStatus(item.getId(), ItemStatus.DONE);
+    Thread.sleep(2000);
+
+    itemRepository.updateToPastDue();
+    var res = itemRepository.findById(item.getId());
+    assertEquals(ItemStatus.DONE, res.get().getStatus());
+  }
+
   private Item createItem() {
     var item = new Item();
     item.setStatus(ItemStatus.NOT_DONE);

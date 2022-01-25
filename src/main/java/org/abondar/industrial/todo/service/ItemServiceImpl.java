@@ -14,6 +14,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -78,6 +79,12 @@ public class ItemServiceImpl implements ItemService {
       logger.error(ex.getMessage());
       throw new ItemChangeException("Unknown status");
     }
+  }
+
+  @Override
+  @Scheduled(fixedDelay = 2000)
+  public void updatePastDueItems() {
+    repository.updateToPastDue();
   }
 
   @Override

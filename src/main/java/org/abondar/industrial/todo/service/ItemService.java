@@ -13,6 +13,8 @@ public interface ItemService {
 
   void changeItemStatus(long itemId, String status);
 
+  void updatePastDueItems();
+
   FindItemsResponse findNotDoneItems(int offset, int limit);
 
   ItemDetailResponse getItemDetails(long itemId);

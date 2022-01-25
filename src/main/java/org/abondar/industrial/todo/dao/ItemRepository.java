@@ -29,6 +29,10 @@ public interface ItemRepository extends JpaRepository<Item, Long> {
   @Query("update Item  it set it.completedAt= :completed where it.id= :id")
   void updateCompleted(@Param(value = "id") long id, @Param(value = "completed") Date completed);
 
-  List<ItemNotDone> findAllByStatus(ItemStatus status, Pageable pageable);
+  @Modifying(clearAutomatically = true)
+  @Query(
+      "update Item  it set it.status= 'PAST_DUE' where it.dueDate <= CURRENT_TIMESTAMP and it.status='NOT_DONE'")
+  void updateToPastDue();
 
+  List<ItemNotDone> findAllByStatus(ItemStatus status, Pageable pageable);
 }
