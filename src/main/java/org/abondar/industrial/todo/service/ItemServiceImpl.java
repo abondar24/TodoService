@@ -1,8 +1,8 @@
 package org.abondar.industrial.todo.service;
 
 import org.abondar.industrial.todo.dao.ItemRepository;
+import org.abondar.industrial.todo.exception.ItemChangeException;
 import org.abondar.industrial.todo.exception.ItemNotFoundException;
-import org.abondar.industrial.todo.exception.ItemStatusException;
 import org.abondar.industrial.todo.model.db.Item;
 import org.abondar.industrial.todo.model.db.ItemStatus;
 import org.abondar.industrial.todo.model.request.AddItemRequest;
@@ -49,7 +49,10 @@ public class ItemServiceImpl implements ItemService {
 
   @Override
   public void changeItemDescription(long itemId, String description) {
-    findItem(itemId);
+    var item = findItem(itemId);
+    if (item.getStatus().equals(ItemStatus.PAST_DUE)) {
+      throw new ItemChangeException("Item can't be modified");
+    }
 
     repository.updateDescription(itemId, description);
   }
@@ -60,8 +63,9 @@ public class ItemServiceImpl implements ItemService {
       var stat = ItemStatus.valueOf(status);
 
       var item = findItem(itemId);
-      if (item.getStatus().equals(ItemStatus.DONE) || stat.equals(ItemStatus.PAST_DUE)) {
-        throw new ItemStatusException("Item status can't be changed ");
+      if (item.getStatus().equals(ItemStatus.DONE)
+          || (stat.equals(ItemStatus.NOT_DONE) && item.getStatus().equals(ItemStatus.PAST_DUE))) {
+        throw new ItemChangeException("Item status can't be changed ");
       }
 
       repository.updateStatus(itemId, stat);
@@ -72,7 +76,7 @@ public class ItemServiceImpl implements ItemService {
 
     } catch (IllegalArgumentException ex) {
       logger.error(ex.getMessage());
-      throw new ItemStatusException("Unknown status");
+      throw new ItemChangeException("Unknown status");
     }
   }
 
