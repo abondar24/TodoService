@@ -44,7 +44,7 @@ public class ItemServiceImpl implements ItemService {
 
     repository.save(item);
 
-    logger.info("Saved item with id {}", item.getId());
+    logger.info(LogMessageUtil.ITEM_ADDED, item.getId());
 
     return new ItemResponse(item.getId(), item.getDescription(), item.getCreatedAt());
   }
@@ -57,6 +57,7 @@ public class ItemServiceImpl implements ItemService {
     }
 
     repository.updateDescription(itemId, description);
+    logger.info(LogMessageUtil.ITEM_UPDATED, item.getId());
   }
 
   @Override
@@ -82,6 +83,7 @@ public class ItemServiceImpl implements ItemService {
         repository.updateCompleted(itemId, null);
       }
 
+      logger.info(LogMessageUtil.ITEM_STATUS_CHANGED, item.getId());
     } catch (IllegalArgumentException ex) {
       logger.error(ex.getMessage());
       throw new ItemChangeException(MessageUtil.ITEM_STATUS_UNKNOWN);
@@ -91,7 +93,9 @@ public class ItemServiceImpl implements ItemService {
   @Override
   @Scheduled(fixedDelay = 2000)
   public void updatePastDueItems() {
+
     repository.updateToPastDue();
+    logger.info(LogMessageUtil.ITEM_PAST_DUE_UPDATED);
   }
 
   @Override
@@ -128,6 +132,8 @@ public class ItemServiceImpl implements ItemService {
     if (item.getCompletedAt() != null) {
       resp.setCompletedAt(item.getCompletedAt());
     }
+
+    logger.info(LogMessageUtil.ITEM_DETAILS_FOUND, itemId);
 
     return resp;
   }
