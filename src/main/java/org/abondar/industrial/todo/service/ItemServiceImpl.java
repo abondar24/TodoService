@@ -58,13 +58,17 @@ public class ItemServiceImpl implements ItemService {
   public void changeItemStatus(long itemId, String status) {
     try {
       var stat = ItemStatus.valueOf(status);
-      if (stat.equals(ItemStatus.DONE)) {
+
+      var item = findItem(itemId);
+      if (item.getStatus().equals(ItemStatus.DONE) || stat.equals(ItemStatus.PAST_DUE)) {
         throw new ItemStatusException("Item status can't be changed ");
       }
 
-      findItem(itemId);
-
       repository.updateStatus(itemId, stat);
+      if (stat.equals(ItemStatus.DONE)) {
+        var completedAt = new Date();
+        repository.updateCompleted(itemId, completedAt);
+      }
 
     } catch (IllegalArgumentException ex) {
       logger.error(ex.getMessage());
