@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
@@ -70,6 +71,17 @@ public class ItemRepositoryTest {
     var item = createItem();
 
     var page = Pageable.unpaged();
+    var res = itemRepository.findAllByStatus(ItemStatus.NOT_DONE, page);
+    assertEquals(1, res.size());
+    assertEquals(item.getId(), res.get(0).getId());
+  }
+
+  @Test
+  public void findAllNotDonePageTest() {
+    var item = createItem();
+    createItem();
+
+    var page = PageRequest.of(0, 1);
     var res = itemRepository.findAllByStatus(ItemStatus.NOT_DONE, page);
     assertEquals(1, res.size());
     assertEquals(item.getId(), res.get(0).getId());

@@ -3,6 +3,7 @@ package org.abondar.industrial.todo.service;
 import org.abondar.industrial.todo.dao.ItemRepository;
 import org.abondar.industrial.todo.exception.ItemChangeException;
 import org.abondar.industrial.todo.exception.ItemNotFoundException;
+import org.abondar.industrial.todo.exception.MessageUtil;
 import org.abondar.industrial.todo.model.db.Item;
 import org.abondar.industrial.todo.model.db.ItemStatus;
 import org.abondar.industrial.todo.model.request.AddItemRequest;
@@ -52,7 +53,7 @@ public class ItemServiceImpl implements ItemService {
   public void changeItemDescription(long itemId, String description) {
     var item = findItem(itemId);
     if (item.getStatus().equals(ItemStatus.PAST_DUE)) {
-      throw new ItemChangeException("Item can't be modified");
+      throw new ItemChangeException(MessageUtil.ITEM_NOT_MODIFIED);
     }
 
     repository.updateDescription(itemId, description);
@@ -64,20 +65,26 @@ public class ItemServiceImpl implements ItemService {
       var stat = ItemStatus.valueOf(status);
 
       var item = findItem(itemId);
-      if (item.getStatus().equals(ItemStatus.DONE)
-          || (stat.equals(ItemStatus.NOT_DONE) && item.getStatus().equals(ItemStatus.PAST_DUE))) {
-        throw new ItemChangeException("Item status can't be changed ");
+      if (item.getStatus().equals(ItemStatus.PAST_DUE) && !stat.equals(ItemStatus.DONE)) {
+        throw new ItemChangeException(MessageUtil.ITEM_STATUS_NOT_CHANGED);
       }
 
       repository.updateStatus(itemId, stat);
+
+
       if (stat.equals(ItemStatus.DONE)) {
         var completedAt = new Date();
         repository.updateCompleted(itemId, completedAt);
       }
 
+      if (stat.equals(ItemStatus.NOT_DONE)) {
+        var completedAt = new Date();
+        repository.updateCompleted(itemId, null);
+      }
+
     } catch (IllegalArgumentException ex) {
       logger.error(ex.getMessage());
-      throw new ItemChangeException("Unknown status");
+      throw new ItemChangeException(MessageUtil.ITEM_STATUS_UNKNOWN);
     }
   }
 
