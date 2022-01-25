@@ -1,7 +1,6 @@
 package org.abondar.industrial.todo.dao;
 
 import org.abondar.industrial.todo.model.db.Item;
-import org.abondar.industrial.todo.model.db.ItemDescription;
 import org.abondar.industrial.todo.model.db.ItemNotDone;
 import org.abondar.industrial.todo.model.db.ItemStatus;
 import org.springframework.data.domain.Pageable;
@@ -32,5 +31,4 @@ public interface ItemRepository extends JpaRepository<Item, Long> {
 
   List<ItemNotDone> findAllByStatus(ItemStatus status, Pageable pageable);
 
-  ItemDescription getDescriptionById(long id);
 }

@@ -30,8 +30,8 @@ public class ItemRepositoryTest {
   public void findByIdTest() {
     var item = createItem();
 
-    var res = itemRepository.getDescriptionById(item.getId());
-    assertEquals(item.getDescription(), res.getDescription());
+    var res = itemRepository.findById(item.getId());
+    assertEquals(item.getDescription(), res.get().getDescription());
   }
 
   @Test
@@ -40,8 +40,8 @@ public class ItemRepositoryTest {
 
     itemRepository.updateDescription(item.getId(), "new test");
 
-    var res = itemRepository.getDescriptionById(item.getId());
-    assertEquals("new test", res.getDescription());
+    var res = itemRepository.findById(item.getId());
+    assertEquals("new test", res.get().getDescription());
   }
 
   @Test
