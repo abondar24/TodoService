@@ -1,5 +1,8 @@
 package org.abondar.industrial.todo.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.abondar.industrial.todo.model.request.ItemAddRequest;
 import org.abondar.industrial.todo.model.request.ItemChangeRequest;
 import org.abondar.industrial.todo.model.response.FindItemsResponse;
@@ -7,6 +10,7 @@ import org.abondar.industrial.todo.model.response.ItemDetailResponse;
 import org.abondar.industrial.todo.model.response.ItemResponse;
 import org.abondar.industrial.todo.service.ItemService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -29,14 +33,22 @@ public class ItemController {
     this.itemService = itemService;
   }
 
+  @ApiResponses(value = @ApiResponse(responseCode = "201", description = "item added"))
   @PostMapping(
       consumes = MediaType.APPLICATION_JSON_VALUE,
       produces = MediaType.APPLICATION_JSON_VALUE)
   public ResponseEntity<ItemResponse> addItem(@RequestBody ItemAddRequest request) {
     var res = itemService.addItem(request);
-    return ResponseEntity.ok(res);
+    return ResponseEntity.status(HttpStatus.CREATED).body(res);
   }
 
+  @Operation(description = "Field status from request body should be ignored")
+  @ApiResponses(
+      value = {
+        @ApiResponse(responseCode = "200", description = "description changed successfully"),
+        @ApiResponse(responseCode = "400", description = "item can't be changed"),
+        @ApiResponse(responseCode = "404", description = "item not found")
+      })
   @PutMapping(
       path = EndpointUtil.DESCRIPTION_ENDPOINT,
       consumes = MediaType.APPLICATION_JSON_VALUE,
@@ -46,6 +58,14 @@ public class ItemController {
     return ResponseEntity.ok().build();
   }
 
+  @Operation(description = "Field description from request body should be ignored")
+  @ApiResponses(
+      value = {
+        @ApiResponse(responseCode = "200", description = "status changed successfully"),
+        @ApiResponse(
+            responseCode = "400",
+            description = "status can't be changed or status unknown")
+      })
   @PutMapping(
       path = EndpointUtil.STATUS_ENDPOINT,
       consumes = MediaType.APPLICATION_JSON_VALUE,
@@ -55,6 +75,8 @@ public class ItemController {
     return ResponseEntity.ok().build();
   }
 
+  @Operation(description = "To retrieve full list of not done items use limit value -1")
+  @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "items found")})
   @GetMapping(
       path = EndpointUtil.NOT_DONE_ENDPOINT,
       consumes = MediaType.APPLICATION_JSON_VALUE,
@@ -65,6 +87,11 @@ public class ItemController {
     return ResponseEntity.ok(res);
   }
 
+  @ApiResponses(
+      value = {
+        @ApiResponse(responseCode = "200", description = "item details found"),
+        @ApiResponse(responseCode = "404", description = "item not found")
+      })
   @GetMapping(
       path = EndpointUtil.ID_PATH,
       consumes = MediaType.APPLICATION_JSON_VALUE,

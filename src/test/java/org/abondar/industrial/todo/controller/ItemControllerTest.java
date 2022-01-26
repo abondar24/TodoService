@@ -73,7 +73,7 @@ public class ItemControllerTest {
 
     mockMvc
         .perform(post(EndpointUtil.API_ROOT).contentType(MediaType.APPLICATION_JSON).content(req))
-        .andExpect(status().isOk())
+        .andExpect(status().isCreated())
         .andExpect(jsonPath("$", notNullValue()))
         .andExpect(jsonPath("$.itemId", is(1)))
         .andExpect(jsonPath("$.description", is("test")))
