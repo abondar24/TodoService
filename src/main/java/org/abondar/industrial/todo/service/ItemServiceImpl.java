@@ -79,7 +79,6 @@ public class ItemServiceImpl implements ItemService {
       }
 
       if (stat.equals(ItemStatus.NOT_DONE)) {
-        var completedAt = new Date();
         repository.updateCompleted(request.getId(), null);
       }
 
