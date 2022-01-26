@@ -21,7 +21,7 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
     implementation("org.springframework.boot:spring-boot-starter-actuator")
     implementation("org.springframework.boot:spring-boot-starter-validation")
-    implementation("org.springdoc:springdoc-openapi-ui:1.6.4")
+    implementation("org.springdoc:springdoc-openapi-ui:$openApiVersion")
 
     implementation("org.flywaydb:flyway-core:$flywayVersion")
 
@@ -32,4 +32,8 @@ dependencies {
 
 test {
     useJUnitPlatform()
+}
+
+bootBuildImage {
+    imageName = "abondar/todoservice"
 }
