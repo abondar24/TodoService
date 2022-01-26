@@ -6,7 +6,8 @@ import org.abondar.industrial.todo.exception.ItemNotFoundException;
 import org.abondar.industrial.todo.exception.MessageUtil;
 import org.abondar.industrial.todo.model.db.Item;
 import org.abondar.industrial.todo.model.db.ItemStatus;
-import org.abondar.industrial.todo.model.request.AddItemRequest;
+import org.abondar.industrial.todo.model.request.ItemAddRequest;
+import org.abondar.industrial.todo.model.request.ItemChangeRequest;
 import org.abondar.industrial.todo.model.response.FindItemsResponse;
 import org.abondar.industrial.todo.model.response.ItemDetailResponse;
 import org.abondar.industrial.todo.model.response.ItemResponse;
@@ -35,7 +36,7 @@ public class ItemServiceImpl implements ItemService {
   }
 
   @Override
-  public ItemResponse addItem(AddItemRequest request) {
+  public ItemResponse addItem(ItemAddRequest request) {
     var item = new Item();
     item.setDescription(request.getDescription());
     item.setDueDate(request.getDueDate());
@@ -50,37 +51,36 @@ public class ItemServiceImpl implements ItemService {
   }
 
   @Override
-  public void changeItemDescription(long itemId, String description) {
-    var item = findItem(itemId);
+  public void changeItemDescription(ItemChangeRequest request) {
+    var item = findItem(request.getId());
     if (item.getStatus().equals(ItemStatus.PAST_DUE)) {
       throw new ItemChangeException(MessageUtil.ITEM_NOT_MODIFIED);
     }
 
-    repository.updateDescription(itemId, description);
+    repository.updateDescription(request.getId(), request.getDescription());
     logger.info(LogMessageUtil.ITEM_UPDATED, item.getId());
   }
 
   @Override
-  public void changeItemStatus(long itemId, String status) {
+  public void changeItemStatus(ItemChangeRequest request) {
     try {
-      var stat = ItemStatus.valueOf(status);
+      var stat = ItemStatus.valueOf(request.getStatus());
 
-      var item = findItem(itemId);
+      var item = findItem(request.getId());
       if (item.getStatus().equals(ItemStatus.PAST_DUE) && !stat.equals(ItemStatus.DONE)) {
         throw new ItemChangeException(MessageUtil.ITEM_STATUS_NOT_CHANGED);
       }
 
-      repository.updateStatus(itemId, stat);
-
+      repository.updateStatus(request.getId(), stat);
 
       if (stat.equals(ItemStatus.DONE)) {
         var completedAt = new Date();
-        repository.updateCompleted(itemId, completedAt);
+        repository.updateCompleted(request.getId(), completedAt);
       }
 
       if (stat.equals(ItemStatus.NOT_DONE)) {
         var completedAt = new Date();
-        repository.updateCompleted(itemId, null);
+        repository.updateCompleted(request.getId(), null);
       }
 
       logger.info(LogMessageUtil.ITEM_STATUS_CHANGED, item.getId());

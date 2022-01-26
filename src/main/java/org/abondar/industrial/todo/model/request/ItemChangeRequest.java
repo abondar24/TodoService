@@ -7,20 +7,17 @@ import lombok.Setter;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
-import java.util.Date;
 
 @Getter
 @Setter
 @NoArgsConstructor
-public class AddItemRequest {
+public class ItemChangeRequest {
 
   @NotEmpty
   @NotBlank
   @JsonProperty(required = true)
+  private long id;
+
   private String description;
-
-  @NotEmpty
-  @NotBlank
-  @JsonProperty(required = true)
-  private Date dueDate;
+  private String status;
 }

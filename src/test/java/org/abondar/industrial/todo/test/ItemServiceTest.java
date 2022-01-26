@@ -6,7 +6,8 @@ import org.abondar.industrial.todo.exception.ItemNotFoundException;
 import org.abondar.industrial.todo.exception.MessageUtil;
 import org.abondar.industrial.todo.model.db.Item;
 import org.abondar.industrial.todo.model.db.ItemStatus;
-import org.abondar.industrial.todo.model.request.AddItemRequest;
+import org.abondar.industrial.todo.model.request.ItemAddRequest;
+import org.abondar.industrial.todo.model.request.ItemChangeRequest;
 import org.abondar.industrial.todo.service.ItemServiceImpl;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -35,7 +36,7 @@ public class ItemServiceTest {
 
   @Test
   public void addItemTest() {
-    var req = new AddItemRequest();
+    var req = new ItemAddRequest();
     req.setDescription("test");
     req.setDueDate(new Date());
 
@@ -47,47 +48,57 @@ public class ItemServiceTest {
 
   @Test
   public void changeItemDescriptionTest() {
+    var req = new ItemChangeRequest();
+    req.setId(1);
+    req.setDescription("test");
 
     var item = new Item();
     item.setStatus(ItemStatus.NOT_DONE);
 
     when(itemRepository.findById(any(Long.class))).thenReturn(Optional.of(item));
 
-    service.changeItemDescription(1, "test");
+    service.changeItemDescription(req);
     verify(itemRepository, times(1)).updateDescription(1, "test");
   }
 
   @Test
   public void changeDescriptionNoItemTest() {
+    var req = new ItemChangeRequest();
+    req.setId(1);
 
-    var ex =
-        assertThrows(ItemNotFoundException.class, () -> service.changeItemDescription(1, "test"));
+    var ex = assertThrows(ItemNotFoundException.class, () -> service.changeItemDescription(req));
 
     assertEquals(MessageUtil.ITEM_NOT_FOUND, ex.getMessage());
   }
 
   @Test
   public void changeItemDescriptionStatusPastDueTest() {
+    var req = new ItemChangeRequest();
+    req.setId(1);
+    req.setDescription("test");
 
     var item = new Item();
     item.setStatus(ItemStatus.PAST_DUE);
 
     when(itemRepository.findById(any(Long.class))).thenReturn(Optional.of(item));
 
-    var ex =
-        assertThrows(ItemChangeException.class, () -> service.changeItemDescription(1, "test"));
+    var ex = assertThrows(ItemChangeException.class, () -> service.changeItemDescription(req));
 
     assertEquals(MessageUtil.ITEM_NOT_MODIFIED, ex.getMessage());
   }
 
   @Test
   public void changeItemStatusDoneTest() {
+    var req = new ItemChangeRequest();
+    req.setId(1);
+    req.setStatus(ItemStatus.DONE.toString());
+
     var item = new Item();
     item.setStatus(ItemStatus.NOT_DONE);
 
     when(itemRepository.findById(any(Long.class))).thenReturn(Optional.of(item));
 
-    service.changeItemStatus(1, ItemStatus.DONE.toString());
+    service.changeItemStatus(req);
 
     verify(itemRepository, times(1)).updateStatus(1, ItemStatus.DONE);
     verify(itemRepository, times(1)).updateCompleted(any(Long.class), any(Date.class));
@@ -95,12 +106,16 @@ public class ItemServiceTest {
 
   @Test
   public void changeItemStatusNotDoneTest() {
+    var req = new ItemChangeRequest();
+    req.setId(1);
+    req.setStatus(ItemStatus.NOT_DONE.toString());
+
     var item = new Item();
     item.setStatus(ItemStatus.DONE);
 
     when(itemRepository.findById(any(Long.class))).thenReturn(Optional.of(item));
 
-    service.changeItemStatus(1, ItemStatus.NOT_DONE.toString());
+    service.changeItemStatus(req);
 
     verify(itemRepository, times(1)).updateStatus(1, ItemStatus.NOT_DONE);
     verify(itemRepository, times(1)).updateCompleted(any(Long.class), nullable(Date.class));
@@ -108,22 +123,27 @@ public class ItemServiceTest {
 
   @Test
   public void changeItemStatusPastDueTest() {
+    var req = new ItemChangeRequest();
+    req.setId(1);
+    req.setStatus(ItemStatus.NOT_DONE.toString());
+
     var item = new Item();
     item.setStatus(ItemStatus.PAST_DUE);
 
     when(itemRepository.findById(any(Long.class))).thenReturn(Optional.of(item));
 
-    var ex =
-        assertThrows(
-            ItemChangeException.class,
-            () -> service.changeItemStatus(1, ItemStatus.NOT_DONE.toString()));
+    var ex = assertThrows(ItemChangeException.class, () -> service.changeItemStatus(req));
 
     assertEquals(MessageUtil.ITEM_STATUS_NOT_CHANGED, ex.getMessage());
   }
 
   @Test
   public void changeItemStatusWrongTest() {
-    var ex = assertThrows(ItemChangeException.class, () -> service.changeItemStatus(1, "test"));
+    var req = new ItemChangeRequest();
+    req.setId(1);
+    req.setStatus("test");
+
+    var ex = assertThrows(ItemChangeException.class, () -> service.changeItemStatus(req));
 
     assertEquals(MessageUtil.ITEM_STATUS_UNKNOWN, ex.getMessage());
   }
