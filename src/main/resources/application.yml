@@ -16,3 +16,7 @@ springdoc:
     path: /docs
   swagger-ui:
     path: /swagger
+
+server:
+  error:
+    include-message: always

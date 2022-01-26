@@ -1,4 +1,4 @@
-package org.abondar.industrial.todo.test;
+package org.abondar.industrial.todo.service;
 
 import org.abondar.industrial.todo.dao.ItemRepository;
 import org.abondar.industrial.todo.exception.ItemChangeException;
@@ -8,7 +8,6 @@ import org.abondar.industrial.todo.model.db.Item;
 import org.abondar.industrial.todo.model.db.ItemStatus;
 import org.abondar.industrial.todo.model.request.ItemAddRequest;
 import org.abondar.industrial.todo.model.request.ItemChangeRequest;
-import org.abondar.industrial.todo.service.ItemServiceImpl;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
