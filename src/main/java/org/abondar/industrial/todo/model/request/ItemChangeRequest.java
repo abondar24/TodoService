@@ -18,6 +18,7 @@ public class ItemChangeRequest {
   @JsonProperty(required = true)
   private long id;
 
-  private String description;
-  private String status;
+  @NotEmpty @NotBlank private String description;
+
+  @NotEmpty @NotBlank private String status;
 }

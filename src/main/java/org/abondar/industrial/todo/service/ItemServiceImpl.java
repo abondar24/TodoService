@@ -52,7 +52,7 @@ public class ItemServiceImpl implements ItemService {
   @Override
   public void changeItemDescription(ItemChangeRequest request) {
     var item = findItem(request.getId());
-    if (item.getStatus().equals(ItemStatus.PAST_DUE)) {
+    if (!item.getStatus().equals(ItemStatus.NOT_DONE)) {
       throw new ItemChangeException(MessageUtil.ITEM_NOT_MODIFIED);
     }
 

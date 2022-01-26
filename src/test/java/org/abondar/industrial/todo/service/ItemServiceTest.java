@@ -10,6 +10,9 @@ import org.abondar.industrial.todo.model.request.ItemAddRequest;
 import org.abondar.industrial.todo.model.request.ItemChangeRequest;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -17,6 +20,7 @@ import org.springframework.data.domain.Pageable;
 
 import java.util.Date;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -70,14 +74,20 @@ public class ItemServiceTest {
     assertEquals(MessageUtil.ITEM_NOT_FOUND, ex.getMessage());
   }
 
-  @Test
-  public void changeItemDescriptionStatusPastDueTest() {
+  private static Stream<Arguments> statusArgs() {
+    return Stream.of(
+        Arguments.arguments(ItemStatus.PAST_DUE), Arguments.arguments(ItemStatus.DONE));
+  }
+
+  @ParameterizedTest
+  @MethodSource("statusArgs")
+  public void changeItemDescriptionWrongStatusTest(ItemStatus status) {
     var req = new ItemChangeRequest();
     req.setId(1);
     req.setDescription("test");
 
     var item = new Item();
-    item.setStatus(ItemStatus.PAST_DUE);
+    item.setStatus(status);
 
     when(itemRepository.findById(any(Long.class))).thenReturn(Optional.of(item));
 
