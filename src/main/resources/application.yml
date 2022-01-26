@@ -10,3 +10,9 @@ spring:
       path: /h2
   flyway:
     baseline-on-migrate: true
+
+springdoc:
+  api-docs:
+    path: /docs
+  swagger-ui:
+    path: /swagger
