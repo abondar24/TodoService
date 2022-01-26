@@ -8,7 +8,6 @@ public class LogMessageUtil {
 
   public static final String ITEM_STATUS_CHANGED = "Updated item status with id {}";
 
-  public static final String ITEM_PAST_DUE_UPDATED = "Updated past due items";
 
   public static final String ITEM_DETAILS_FOUND = "Successfully found details for item with id {}";
 

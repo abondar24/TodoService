@@ -14,7 +14,7 @@ public interface ItemService {
 
   void changeItemStatus(ItemChangeRequest request);
 
-  void updatePastDueItems();
+
 
   FindItemsResponse findNotDoneItems(int offset, int limit);
 
