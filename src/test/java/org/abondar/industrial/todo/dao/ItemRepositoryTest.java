@@ -10,6 +10,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import java.time.Instant;
 import java.util.Date;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -88,10 +89,10 @@ public class ItemRepositoryTest {
   }
 
   @Test
-  public void dueDateTest() throws Exception {
+  public void dueDateTest() {
     var item = createItem();
-
-    Thread.sleep(2000);
+    var past = Instant.now().minusSeconds(2);
+    item.setDueDate(Date.from(past));
 
     itemRepository.updateToPastDue();
 
@@ -100,10 +101,12 @@ public class ItemRepositoryTest {
   }
 
   @Test
-  public void dueDateItemDoneTest() throws Exception {
+  public void dueDateItemDoneTest() {
     var item = createItem();
+    var past = Instant.now().minusSeconds(2);
+    item.setDueDate(Date.from(past));
+
     itemRepository.updateStatus(item.getId(), ItemStatus.DONE);
-    Thread.sleep(2000);
 
     itemRepository.updateToPastDue();
     var res = itemRepository.findById(item.getId());
