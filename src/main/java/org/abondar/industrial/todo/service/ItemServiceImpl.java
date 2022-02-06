@@ -120,9 +120,6 @@ public class ItemServiceImpl implements ItemService {
     resp.setCreatedAt(item.getCreatedAt());
     resp.setDueDate(item.getDueDate());
 
-    if (item.getCompletedAt() != null) {
-      resp.setCompletedAt(item.getCompletedAt());
-    }
 
     logger.info(LogMessageUtil.ITEM_DETAILS_FOUND, itemId);
 
