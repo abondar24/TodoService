@@ -18,6 +18,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Pageable;
 
+import java.time.Instant;
 import java.util.Date;
 import java.util.Optional;
 import java.util.stream.Stream;
@@ -39,7 +40,7 @@ public class ItemServiceTest {
 
   @Test
   public void addItemTest() {
-    var req = new ItemAddRequest("test", new Date());
+    var req = new ItemAddRequest("test", Instant.now());
 
     when(itemRepository.save(any(Item.class))).thenReturn(any(Item.class));
 
@@ -164,6 +165,6 @@ public class ItemServiceTest {
 
     var res = service.getItemDetails(item.getId());
     assertEquals(item.getDescription(), res.description());
-    assertEquals(item.getCompletedAt(), res.completedAt());
+    assertEquals(item.getCompletedAt().toInstant(), res.completedAt());
   }
 }

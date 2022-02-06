@@ -38,7 +38,7 @@ public class ItemServiceImpl implements ItemService {
   public ItemResponse addItem(ItemAddRequest request) {
     var item = new Item();
     item.setDescription(request.description());
-    item.setDueDate(request.dueDate());
+    item.setDueDate(Date.from(request.dueDate()));
     item.setStatus(ItemStatus.NOT_DONE);
     item.setCreatedAt(new Date());
 
@@ -46,7 +46,7 @@ public class ItemServiceImpl implements ItemService {
 
     logger.info(LogMessageUtil.ITEM_ADDED, item.getId());
 
-    return new ItemResponse(item.getId(), item.getDescription(), item.getCreatedAt());
+    return new ItemResponse(item.getId(), item.getDescription(), item.getCreatedAt().toInstant());
   }
 
   @Override
@@ -103,7 +103,10 @@ public class ItemServiceImpl implements ItemService {
 
     var itemResps =
         items.stream()
-            .map(ind -> new ItemResponse(ind.getId(), ind.getDescription(), ind.getCreatedAt()))
+            .map(
+                ind ->
+                    new ItemResponse(
+                        ind.getId(), ind.getDescription(), ind.getCreatedAt().toInstant()))
             .toList();
 
     return new FindItemsResponse(itemResps);
@@ -117,9 +120,9 @@ public class ItemServiceImpl implements ItemService {
         new ItemDetailResponse(
             item.getDescription(),
             item.getStatus(),
-            item.getCreatedAt(),
-            item.getDueDate(),
-            item.getCompletedAt());
+            item.getCreatedAt().toInstant(),
+            item.getDueDate().toInstant(),
+            item.getCompletedAt().toInstant());
 
     logger.info(LogMessageUtil.ITEM_DETAILS_FOUND, itemId);
 

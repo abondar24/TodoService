@@ -1,6 +1,6 @@
 package org.abondar.industrial.todo.model.response;
 
-import java.util.Date;
+import java.time.Instant;
 
 
 public record ItemResponse(
@@ -8,5 +8,5 @@ public record ItemResponse(
 
         String description,
 
-        Date createdAt
+        Instant createdAt
 ) {}

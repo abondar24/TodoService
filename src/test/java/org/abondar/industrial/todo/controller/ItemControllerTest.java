@@ -19,10 +19,11 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.MediaType;
+import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
-import java.util.Date;
+import java.time.Instant;
 import java.util.List;
 
 import static org.hamcrest.Matchers.hasSize;
@@ -57,16 +58,16 @@ public class ItemControllerTest {
             .setControllerAdvice(new ItemExceptionHandler())
             .build();
 
-    mapper = new ObjectMapper();
+    mapper = Jackson2ObjectMapperBuilder.json().build();
   }
 
   @Test
   public void addItemTest() throws Exception {
-    var request = new ItemAddRequest("test", new Date());
+    var request = new ItemAddRequest("test", Instant.now());
 
     var req = mapper.writeValueAsString(request);
 
-    var itemResponse = new ItemResponse(1, "test", new Date());
+    var itemResponse = new ItemResponse(1, "test", Instant.now());
     when(service.addItem(any(ItemAddRequest.class))).thenReturn(itemResponse);
 
     mockMvc
@@ -200,7 +201,8 @@ public class ItemControllerTest {
   public void getItemDetailsTest() throws Exception {
 
     var itemResponse =
-        new ItemDetailResponse("test", ItemStatus.NOT_DONE, new Date(), new Date(), new Date());
+        new ItemDetailResponse(
+            "test", ItemStatus.NOT_DONE, Instant.now(), Instant.now(), Instant.now());
 
     when(service.getItemDetails(1)).thenReturn(itemResponse);
 

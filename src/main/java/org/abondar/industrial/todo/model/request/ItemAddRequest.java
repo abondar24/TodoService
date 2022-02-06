@@ -4,7 +4,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
-import java.util.Date;
+import java.time.Instant;
+
 
 
 public record ItemAddRequest (
@@ -17,6 +18,6 @@ public record ItemAddRequest (
         @NotEmpty
   @NotBlank
   @JsonProperty(required = true)
-        Date dueDate
+        Instant dueDate
   ){}
 
