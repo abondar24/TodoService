@@ -62,9 +62,7 @@ public class ItemControllerTest {
 
   @Test
   public void addItemTest() throws Exception {
-    var request = new ItemAddRequest();
-    request.setDescription("test");
-    request.setDueDate(new Date());
+    var request = new ItemAddRequest("test", new Date());
 
     var req = mapper.writeValueAsString(request);
 
@@ -82,9 +80,7 @@ public class ItemControllerTest {
 
   @Test
   public void updateDescriptionTest() throws Exception {
-    var request = new ItemChangeRequest();
-    request.setId(1);
-    request.setDescription("test");
+    var request = new ItemChangeRequest(1L, "test", ItemStatus.NOT_DONE.toString());
 
     var req = mapper.writeValueAsString(request);
 
@@ -100,9 +96,7 @@ public class ItemControllerTest {
 
   @Test
   public void itemNotFoundTest() throws Exception {
-    var request = new ItemChangeRequest();
-    request.setId(1);
-    request.setDescription("test");
+    var request = new ItemChangeRequest(1, "test", ItemStatus.NOT_DONE.toString());
 
     var req = mapper.writeValueAsString(request);
 
@@ -126,9 +120,7 @@ public class ItemControllerTest {
 
   @Test
   public void updateStatusTest() throws Exception {
-    var request = new ItemChangeRequest();
-    request.setId(1);
-    request.setStatus(ItemStatus.DONE.toString());
+    var request = new ItemChangeRequest(1, "test", ItemStatus.DONE.toString());
 
     var req = mapper.writeValueAsString(request);
 
@@ -144,9 +136,7 @@ public class ItemControllerTest {
 
   @Test
   public void updateWrongStatusTest() throws Exception {
-    var request = new ItemChangeRequest();
-    request.setId(1);
-    request.setStatus(ItemStatus.PAST_DUE.toString());
+    var request = new ItemChangeRequest(1, "test", ItemStatus.PAST_DUE.toString());
 
     var req = mapper.writeValueAsString(request);
 
@@ -169,9 +159,7 @@ public class ItemControllerTest {
 
   @Test
   public void updateUnknownStatusTest() throws Exception {
-    var request = new ItemChangeRequest();
-    request.setId(1);
-    request.setStatus(ItemStatus.PAST_DUE.toString());
+    var request = new ItemChangeRequest(1, ItemStatus.PAST_DUE.toString(), null);
 
     var req = mapper.writeValueAsString(request);
 
@@ -195,8 +183,7 @@ public class ItemControllerTest {
   @Test
   public void findNotDoneStatusTest() throws Exception {
 
-    var resp = new FindItemsResponse();
-    resp.setItems(List.of());
+    var resp = new FindItemsResponse(List.of());
     when(service.findNotDoneItems(0, 1)).thenReturn(resp);
 
     mockMvc
@@ -212,8 +199,8 @@ public class ItemControllerTest {
   @Test
   public void getItemDetailsTest() throws Exception {
 
-    var itemResponse = new ItemDetailResponse();
-    itemResponse.setDescription("test");
+    var itemResponse =
+        new ItemDetailResponse("test", ItemStatus.NOT_DONE, new Date(), new Date(), new Date());
 
     when(service.getItemDetails(1)).thenReturn(itemResponse);
 

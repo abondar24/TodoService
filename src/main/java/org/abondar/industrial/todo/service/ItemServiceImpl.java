@@ -37,8 +37,8 @@ public class ItemServiceImpl implements ItemService {
   @Override
   public ItemResponse addItem(ItemAddRequest request) {
     var item = new Item();
-    item.setDescription(request.getDescription());
-    item.setDueDate(request.getDueDate());
+    item.setDescription(request.description());
+    item.setDueDate(request.dueDate());
     item.setStatus(ItemStatus.NOT_DONE);
     item.setCreatedAt(new Date());
 
@@ -51,34 +51,34 @@ public class ItemServiceImpl implements ItemService {
 
   @Override
   public void changeItemDescription(ItemChangeRequest request) {
-    var item = findItem(request.getId());
+    var item = findItem(request.id());
     if (!item.getStatus().equals(ItemStatus.NOT_DONE)) {
       throw new ItemChangeException(MessageUtil.ITEM_NOT_MODIFIED);
     }
 
-    repository.updateDescription(request.getId(), request.getDescription());
+    repository.updateDescription(request.id(), request.description());
     logger.info(LogMessageUtil.ITEM_UPDATED, item.getId());
   }
 
   @Override
   public void changeItemStatus(ItemChangeRequest request) {
     try {
-      var stat = ItemStatus.valueOf(request.getStatus());
+      var stat = ItemStatus.valueOf(request.status());
 
-      var item = findItem(request.getId());
+      var item = findItem(request.id());
       if (item.getStatus().equals(ItemStatus.PAST_DUE) && !stat.equals(ItemStatus.DONE)) {
         throw new ItemChangeException(MessageUtil.ITEM_STATUS_NOT_CHANGED);
       }
 
-      repository.updateStatus(request.getId(), stat);
+      repository.updateStatus(request.id(), stat);
 
       if (stat.equals(ItemStatus.DONE)) {
         var completedAt = new Date();
-        repository.updateCompleted(request.getId(), completedAt);
+        repository.updateCompleted(request.id(), completedAt);
       }
 
       if (stat.equals(ItemStatus.NOT_DONE)) {
-        repository.updateCompleted(request.getId(), null);
+        repository.updateCompleted(request.id(), null);
       }
 
       logger.info(LogMessageUtil.ITEM_STATUS_CHANGED, item.getId());
@@ -113,13 +113,13 @@ public class ItemServiceImpl implements ItemService {
   public ItemDetailResponse getItemDetails(long itemId) {
     var item = findItem(itemId);
 
-    var resp = new ItemDetailResponse();
-    resp.setCompletedAt(item.getCompletedAt());
-    resp.setDescription(item.getDescription());
-    resp.setStatus(item.getStatus());
-    resp.setCreatedAt(item.getCreatedAt());
-    resp.setDueDate(item.getDueDate());
-
+    var resp =
+        new ItemDetailResponse(
+            item.getDescription(),
+            item.getStatus(),
+            item.getCreatedAt(),
+            item.getDueDate(),
+            item.getCompletedAt());
 
     logger.info(LogMessageUtil.ITEM_DETAILS_FOUND, itemId);
 

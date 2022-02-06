@@ -39,21 +39,17 @@ public class ItemServiceTest {
 
   @Test
   public void addItemTest() {
-    var req = new ItemAddRequest();
-    req.setDescription("test");
-    req.setDueDate(new Date());
+    var req = new ItemAddRequest("test", new Date());
 
     when(itemRepository.save(any(Item.class))).thenReturn(any(Item.class));
 
     var resp = service.addItem(req);
-    assertEquals(req.getDescription(), resp.getDescription());
+    assertEquals(req.description(), resp.description());
   }
 
   @Test
   public void changeItemDescriptionTest() {
-    var req = new ItemChangeRequest();
-    req.setId(1);
-    req.setDescription("test");
+    var req = new ItemChangeRequest(1, "test", null);
 
     var item = new Item();
     item.setStatus(ItemStatus.NOT_DONE);
@@ -66,8 +62,7 @@ public class ItemServiceTest {
 
   @Test
   public void changeDescriptionNoItemTest() {
-    var req = new ItemChangeRequest();
-    req.setId(1);
+    var req = new ItemChangeRequest(1, null, null);
 
     var ex = assertThrows(ItemNotFoundException.class, () -> service.changeItemDescription(req));
 
@@ -82,9 +77,7 @@ public class ItemServiceTest {
   @ParameterizedTest
   @MethodSource("statusArgs")
   public void changeItemDescriptionWrongStatusTest(ItemStatus status) {
-    var req = new ItemChangeRequest();
-    req.setId(1);
-    req.setDescription("test");
+    var req = new ItemChangeRequest(1, "test", null);
 
     var item = new Item();
     item.setStatus(status);
@@ -98,9 +91,7 @@ public class ItemServiceTest {
 
   @Test
   public void changeItemStatusDoneTest() {
-    var req = new ItemChangeRequest();
-    req.setId(1);
-    req.setStatus(ItemStatus.DONE.toString());
+    var req = new ItemChangeRequest(1, "test", ItemStatus.DONE.toString());
 
     var item = new Item();
     item.setStatus(ItemStatus.NOT_DONE);
@@ -115,9 +106,7 @@ public class ItemServiceTest {
 
   @Test
   public void changeItemStatusNotDoneTest() {
-    var req = new ItemChangeRequest();
-    req.setId(1);
-    req.setStatus(ItemStatus.NOT_DONE.toString());
+    var req = new ItemChangeRequest(1, "test", ItemStatus.NOT_DONE.toString());
 
     var item = new Item();
     item.setStatus(ItemStatus.DONE);
@@ -132,9 +121,7 @@ public class ItemServiceTest {
 
   @Test
   public void changeItemStatusPastDueTest() {
-    var req = new ItemChangeRequest();
-    req.setId(1);
-    req.setStatus(ItemStatus.NOT_DONE.toString());
+    var req = new ItemChangeRequest(1, "test", ItemStatus.NOT_DONE.toString());
 
     var item = new Item();
     item.setStatus(ItemStatus.PAST_DUE);
@@ -148,9 +135,7 @@ public class ItemServiceTest {
 
   @Test
   public void changeItemStatusWrongTest() {
-    var req = new ItemChangeRequest();
-    req.setId(1);
-    req.setStatus("test");
+    var req = new ItemChangeRequest(1, "test", "test");
 
     var ex = assertThrows(ItemChangeException.class, () -> service.changeItemStatus(req));
 
@@ -162,7 +147,7 @@ public class ItemServiceTest {
 
     var res = service.findNotDoneItems(0, 1);
     verify(itemRepository, times(1)).findAllByStatus(any(ItemStatus.class), any(Pageable.class));
-    assertEquals(0, res.getItems().size());
+    assertEquals(0, res.items().size());
   }
 
   @Test
@@ -178,7 +163,7 @@ public class ItemServiceTest {
     when(itemRepository.findById(item.getId())).thenReturn(Optional.of(item));
 
     var res = service.getItemDetails(item.getId());
-    assertEquals(item.getDescription(), res.getDescription());
-    assertEquals(item.getCompletedAt(), res.getCompletedAt());
+    assertEquals(item.getDescription(), res.description());
+    assertEquals(item.getCompletedAt(), res.completedAt());
   }
 }
