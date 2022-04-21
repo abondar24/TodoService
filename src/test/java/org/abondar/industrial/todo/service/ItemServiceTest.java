@@ -24,6 +24,7 @@ import java.util.Optional;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.nullable;
@@ -166,5 +167,22 @@ public class ItemServiceTest {
     var res = service.getItemDetails(item.getId());
     assertEquals(item.getDescription(), res.description());
     assertEquals(item.getCompletedAt().toInstant(), res.completedAt());
+  }
+
+  @Test
+  public void getItemDetailsNotCompletedTest() {
+    var item = new Item();
+    item.setId(1);
+    item.setStatus(ItemStatus.DONE);
+    item.setDescription("test");
+    item.setDueDate(new Date());
+    item.setCreatedAt(new Date());
+    item.setCompletedAt(null);
+
+    when(itemRepository.findById(item.getId())).thenReturn(Optional.of(item));
+
+    var res = service.getItemDetails(item.getId());
+    assertEquals(item.getDescription(), res.description());
+    assertNull(res.completedAt());
   }
 }

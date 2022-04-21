@@ -1,5 +1,6 @@
 package org.abondar.industrial.todo.service;
 
+import lombok.extern.slf4j.Slf4j;
 import org.abondar.industrial.todo.dao.ItemRepository;
 import org.abondar.industrial.todo.exception.ItemChangeException;
 import org.abondar.industrial.todo.exception.ItemNotFoundException;
@@ -11,21 +12,19 @@ import org.abondar.industrial.todo.model.request.ItemChangeRequest;
 import org.abondar.industrial.todo.model.response.FindItemsResponse;
 import org.abondar.industrial.todo.model.response.ItemDetailResponse;
 import org.abondar.industrial.todo.model.response.ItemResponse;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Instant;
 import java.util.Date;
 
 @Service
 @Transactional
+@Slf4j
 public class ItemServiceImpl implements ItemService {
-
-  private static final Logger logger = LoggerFactory.getLogger(ItemServiceImpl.class);
 
   private final ItemRepository repository;
 
@@ -44,7 +43,7 @@ public class ItemServiceImpl implements ItemService {
 
     repository.save(item);
 
-    logger.info(LogMessageUtil.ITEM_ADDED, item.getId());
+    log.info(LogMessageUtil.ITEM_ADDED, item.getId());
 
     return new ItemResponse(item.getId(), item.getDescription(), item.getCreatedAt().toInstant());
   }
@@ -57,7 +56,7 @@ public class ItemServiceImpl implements ItemService {
     }
 
     repository.updateDescription(request.id(), request.description());
-    logger.info(LogMessageUtil.ITEM_UPDATED, item.getId());
+    log.info(LogMessageUtil.ITEM_UPDATED, item.getId());
   }
 
   @Override
@@ -81,9 +80,9 @@ public class ItemServiceImpl implements ItemService {
         repository.updateCompleted(request.id(), null);
       }
 
-      logger.info(LogMessageUtil.ITEM_STATUS_CHANGED, item.getId());
+      log.info(LogMessageUtil.ITEM_STATUS_CHANGED, item.getId());
     } catch (IllegalArgumentException ex) {
-      logger.error(ex.getMessage());
+      log.error(ex.getMessage());
       throw new ItemChangeException(MessageUtil.ITEM_STATUS_UNKNOWN);
     }
   }
@@ -116,15 +115,22 @@ public class ItemServiceImpl implements ItemService {
   public ItemDetailResponse getItemDetails(long itemId) {
     var item = findItem(itemId);
 
+    Instant completedAt;
+    if (item.getCompletedAt() != null) {
+      completedAt = item.getCompletedAt().toInstant();
+    } else {
+      completedAt = null;
+    }
+
     var resp =
         new ItemDetailResponse(
             item.getDescription(),
             item.getStatus(),
             item.getCreatedAt().toInstant(),
             item.getDueDate().toInstant(),
-            item.getCompletedAt().toInstant());
+            completedAt);
 
-    logger.info(LogMessageUtil.ITEM_DETAILS_FOUND, itemId);
+    log.info(LogMessageUtil.ITEM_DETAILS_FOUND, itemId);
 
     return resp;
   }
@@ -132,6 +138,7 @@ public class ItemServiceImpl implements ItemService {
   private Item findItem(long itemId) {
     var item = repository.findById(itemId);
     if (item.isEmpty()) {
+      log.error("Item not found by id " + itemId);
       throw new ItemNotFoundException();
     }
 

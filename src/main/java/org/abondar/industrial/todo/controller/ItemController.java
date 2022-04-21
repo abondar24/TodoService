@@ -79,7 +79,6 @@ public class ItemController {
   @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "items found")})
   @GetMapping(
       path = EndpointUtil.NOT_DONE_ENDPOINT,
-      consumes = MediaType.APPLICATION_JSON_VALUE,
       produces = MediaType.APPLICATION_JSON_VALUE)
   public ResponseEntity<FindItemsResponse> findNotDoneItems(
       @RequestParam(value = "offset") int offset, @RequestParam(value = "limit") int limit) {
@@ -94,7 +93,6 @@ public class ItemController {
       })
   @GetMapping(
       path = EndpointUtil.ID_PATH,
-      consumes = MediaType.APPLICATION_JSON_VALUE,
       produces = MediaType.APPLICATION_JSON_VALUE)
   public ResponseEntity<ItemDetailResponse> getItemDetails(@PathVariable long id) {
     var res = itemService.getItemDetails(id);
