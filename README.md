@@ -74,3 +74,9 @@ Note: check thoroughly the api documentation before using the service.
 - Done item can be moved to not done state, but their complete time is reset
 - Done items are not updated by automatic past due update
 - Done items can't have their description modified
+
+## Logging
+
+Local ELK stack was setup using this repo https://github.com/deviantony/docker-elk
+
+Log data is sent via filebeat

@@ -108,6 +108,8 @@ public class ItemServiceImpl implements ItemService {
                         ind.getId(), ind.getDescription(), ind.getCreatedAt().toInstant()))
             .toList();
 
+    log.info("Found Items with offset {} and limit {}", offset, limit);
+
     return new FindItemsResponse(itemResps);
   }
 
@@ -138,7 +140,7 @@ public class ItemServiceImpl implements ItemService {
   private Item findItem(long itemId) {
     var item = repository.findById(itemId);
     if (item.isEmpty()) {
-      log.error("Item not found by id " + itemId);
+      log.error("Item not found by id {}", itemId);
       throw new ItemNotFoundException();
     }
 

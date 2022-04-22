@@ -24,6 +24,7 @@ dependencies {
     implementation("org.springdoc:springdoc-openapi-ui:$openApiVersion")
 
     implementation("org.flywaydb:flyway-core:$flywayVersion")
+    implementation('ch.qos.logback:logback-core:1.2.11')
 
     runtimeOnly("com.h2database:h2")
 

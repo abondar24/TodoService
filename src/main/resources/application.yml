@@ -20,3 +20,7 @@ springdoc:
 server:
   error:
     include-message: always
+
+logging.logstash:
+  enabled: true
+  url: localhost:5000
