@@ -55,8 +55,15 @@ java -jar build/libs/TodoService-1.0-SNAPSHOT.jar
 - Run a docker image
 
 ```
-docker run -d --name todo  -p 8080:8080 abondar/todoservice
+`docker run -d --name todo  -p 8080:8080 abondar/todoservice`
 ```
+
+## Profiles
+
+- default 
+- dev
+- elk 
+- docker
 
 ## Access
 

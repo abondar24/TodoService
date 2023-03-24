@@ -14,13 +14,19 @@ spring:
 springdoc:
   api-docs:
     path: /docs
+    enabled: true
   swagger-ui:
     path: /swagger
+    enabled: true
 
 server:
   error:
     include-message: always
 
 logging.logstash:
-  enabled: true
+  enabled: false
   url: localhost:5000
+
+logging:
+  file:
+    name: /opt/todo/log/app-todo.log

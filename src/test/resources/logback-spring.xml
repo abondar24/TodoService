@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration>
+
+<configuration>
+
+    <property name="LOG_PATTERN" value="%d{yyyy-MM-dd HH:mm:ss.SSS} %relative [%thread] %-5level %logger{35} - %msg%n"/>
+    <property name="LOG_FILE" value="${LOG_FILE:-${LOG_PATH:=${LOG_TEMP:-logs}}/app-todo.log}"/>
+
+    <include resource="org/springframework/boot/logging/logback/defaults.xml"/>
+    <include resource="org/springframework/boot/logging/logback/console-appender.xml"/>
+
+
+        <root level="info">
+            <appender-ref ref="CONSOLE"/>
+        </root>
+</configuration>

@@ -24,7 +24,7 @@ dependencies {
     implementation("org.springdoc:springdoc-openapi-ui:$openApiVersion")
 
     implementation("org.flywaydb:flyway-core:$flywayVersion")
-    implementation('ch.qos.logback:logback-core:1.2.11')
+    implementation('net.logstash.logback:logstash-logback-encoder:7.3')
 
     runtimeOnly("com.h2database:h2")
 
@@ -37,4 +37,6 @@ test {
 
 bootBuildImage {
     imageName = "abondar/todoservice"
+    //TODO fix after upgrade
+    environment("SPRING_PROFILES_ACTIVE":"docker")
 }
