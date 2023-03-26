@@ -28,6 +28,10 @@
         <encoder class="net.logstash.logback.encoder.LogstashEncoder"/>
     </appender>
 
+    <appender name="JSON_CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder class="net.logstash.logback.encoder.LogstashEncoder"/>
+    </appender>
+
     <springProfile name="!(dev|docker)">
         <root level="info">
             <appender-ref ref="TIME_BASED_FILE"/>
@@ -35,9 +39,15 @@
         </root>
     </springProfile>
 
-    <springProfile name="dev | docker">
+    <springProfile name="dev">
         <root level="info">
             <appender-ref ref="CONSOLE"/>
+        </root>
+    </springProfile>
+
+    <springProfile name="docker">
+        <root level="info">
+            <appender-ref ref="JSON_CONSOLE"/>
         </root>
     </springProfile>
 </configuration>

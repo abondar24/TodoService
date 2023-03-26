@@ -21,11 +21,10 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
     implementation("org.springframework.boot:spring-boot-starter-actuator")
     implementation("org.springframework.boot:spring-boot-starter-validation")
-    implementation("org.springdoc:springdoc-openapi-ui:$openApiVersion")
 
     implementation("org.flywaydb:flyway-core:$flywayVersion")
-    implementation('net.logstash.logback:logstash-logback-encoder:7.3')
-
+    implementation("net.logstash.logback:logstash-logback-encoder:$logstashVersion")
+    implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:$springdocVersion")
     runtimeOnly("com.h2database:h2")
 
     testImplementation("org.springframework.boot:spring-boot-starter-test")
@@ -37,6 +36,6 @@ test {
 
 bootBuildImage {
     imageName = "abondar/todoservice"
-    //TODO fix after upgrade
-    environment("SPRING_PROFILES_ACTIVE":"docker")
+    environment["BPE_DELIM_JAVA_TOOL_OPTIONS"] = " "
+    environment["BPE_APPEND_JAVA_TOOL_OPTIONS"]="-Dspring.profiles.active=docker"
 }

@@ -31,7 +31,7 @@ public interface ItemRepository extends JpaRepository<Item, Long> {
 
   @Modifying(clearAutomatically = true)
   @Query(
-      "update Item  it set it.status= 'PAST_DUE' where it.dueDate <= CURRENT_TIMESTAMP and it.status='NOT_DONE'")
+      value = "update item set status= 'PAST_DUE' where due_date <= CURRENT_TIMESTAMP and status='NOT_DONE'",nativeQuery = true)
   void updateToPastDue();
 
   List<ItemNotDone> findAllByStatus(ItemStatus status, Pageable pageable);

@@ -43,13 +43,13 @@ and [here](https://github.com/abondar24/ServerlessAI/tree/master/TodoList)
 - Run the app using gradlew
 
 ```
-./gradlew bootRun
+./gradlew bootRun -PprofileName
 ```
 
 - Run the app via jar
 
 ```
-java -jar build/libs/TodoService-1.0-SNAPSHOT.jar
+java -jar -Dspring.profiles.active=profileName build/libs/TodoService-1.0-SNAPSHOT.jar
 ```
 
 - Run a docker image
@@ -57,6 +57,7 @@ java -jar build/libs/TodoService-1.0-SNAPSHOT.jar
 ```
 `docker run -d --name todo  -p 8080:8080 abondar/todoservice`
 ```
+Note: if no profile is set, directories for logs should be created 
 
 ## Profiles
 

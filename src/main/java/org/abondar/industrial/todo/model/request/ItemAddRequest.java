@@ -1,9 +1,10 @@
 package org.abondar.industrial.todo.model.request;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotEmpty;
+
 import java.time.Instant;
 
 
