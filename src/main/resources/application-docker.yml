@@ -1,7 +1,0 @@
-logging.logstash:
-  enabled: false
-
-logging:
-  file:
-    name:
-

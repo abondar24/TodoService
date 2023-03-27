@@ -1,3 +1,6 @@
 logging.logstash:
   enabled: true
 
+logging:
+  file:
+    name: /opt/todo/log/app-todo.log

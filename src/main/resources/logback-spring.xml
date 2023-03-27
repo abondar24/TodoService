@@ -32,7 +32,7 @@
         <encoder class="net.logstash.logback.encoder.LogstashEncoder"/>
     </appender>
 
-    <springProfile name="!(dev|docker)">
+    <springProfile name="elk">
         <root level="info">
             <appender-ref ref="TIME_BASED_FILE"/>
             <appender-ref ref="JSON_FILE"/>
@@ -45,7 +45,7 @@
         </root>
     </springProfile>
 
-    <springProfile name="docker">
+    <springProfile name="!(dev | elk)">
         <root level="info">
             <appender-ref ref="JSON_CONSOLE"/>
         </root>

@@ -26,6 +26,11 @@ and [here](https://github.com/abondar24/ServerlessAI/tree/master/TodoList)
 ./gradlew clean build
 ```
 
+- Build native image for GraalVM
+```
+./gradlew clean nativeCompile
+```
+
 - Build docker image
 
 ```
@@ -36,6 +41,11 @@ and [here](https://github.com/abondar24/ServerlessAI/tree/master/TodoList)
 
 ```
 ./gradlew clean test
+```
+
+For native tests
+```
+./gradlew clean nativeTest
 ```
 
 ### Run
@@ -50,6 +60,15 @@ and [here](https://github.com/abondar24/ServerlessAI/tree/master/TodoList)
 
 ```
 java -jar -Dspring.profiles.active=profileName build/libs/TodoService-1.0-SNAPSHOT.jar
+```
+- Run native image via gradle
+```
+./gradlew nativeRun
+```
+
+- Run native image in cmd
+```
+./build/native/nativeCompile/todoservice
 ```
 
 - Run a docker image
