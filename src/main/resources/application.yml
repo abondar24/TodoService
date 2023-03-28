@@ -31,5 +31,3 @@ logging.logstash:
 logging:
   file:
     name:
-
-#TODO: fix native tests
