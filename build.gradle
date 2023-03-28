@@ -37,8 +37,6 @@ test {
 
 bootBuildImage {
     imageName = "abondar/todoservice"
-    environment["BPE_DELIM_JAVA_TOOL_OPTIONS"] = " "
-    environment["BPE_SPRINGDOC_SWAGGERUI_VERSION"]="4.1.3"
 }
 
 graalvmNative {
