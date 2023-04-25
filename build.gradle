@@ -3,7 +3,8 @@ plugins {
     id "idea"
     id "org.springframework.boot" version "$springBootVersion"
     id "io.freefair.lombok" version "$lombokVersion"
-    id 'org.graalvm.buildtools.native' version '0.9.20'
+    id 'org.graalvm.buildtools.native' version "$nativeVersion"
+    id 'com.google.cloud.tools.jib' version "$jibVersion"
 }
 
 apply plugin: "java"
@@ -36,7 +37,7 @@ test {
 }
 
 bootBuildImage {
-    imageName = "abondar/todoservice"
+    imageName = "$imageName"
 }
 
 graalvmNative {
@@ -47,3 +48,25 @@ graalvmNative {
         }
     }
 }
+
+
+jib {
+    from {
+        image = "ghcr.io/graalvm/jdk:ol8-java17-22.3.1"
+    }
+    to {
+        image = "$imageName"
+        tag = project.version
+        auth {
+            username = "$dockerhubUser"
+            password = "$dockerhubPass"
+        }
+    }
+
+    container {
+        mainClass = "org.abondar.industrial.todo.TodoApplication"
+        ports = ["8080"]
+    }
+
+}
+

@@ -36,6 +36,17 @@ and [here](https://github.com/abondar24/ServerlessAI/tree/master/TodoList)
 ```
 ./gradlew bootBuildImage
 ```
+- Build jib image and push to registry
+
+```
+./gradlew jib
+```
+
+- Build jib for local
+
+```
+./gradlew jibDockerBuild
+```
 
 ### Test
 
@@ -74,7 +85,7 @@ java -jar -Dspring.profiles.active=profileName build/libs/TodoService-1.0-SNAPSH
 - Run a docker image
 
 ```
-`docker run -d --name todo  -p 8080:8080 abondar/todoservice`
+`docker run -d --name todo  -p 8080:8080 abondar/todoservice:<tag>`
 ```
 Note: if no profile is set, directories for logs should be created 
 
@@ -83,7 +94,6 @@ Note: if no profile is set, directories for logs should be created
 - default 
 - dev
 - elk 
-- docker
 
 ## Access
 
